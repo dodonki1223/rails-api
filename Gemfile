@@ -25,6 +25,8 @@ gem 'factory_bot_rails'
 # Github: https://github.com/Netflix/fast_jsonapi
 gem 'fast_jsonapi'
 
+gem 'kaminari'
+
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
