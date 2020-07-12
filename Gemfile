@@ -11,6 +11,15 @@ gem 'sqlite3', '~> 1.4'
 gem 'puma', '~> 4.1'
 gem 'rspec-rails'
 gem 'factory_bot_rails'
+
+# Github:   https://github.com/rails-api/active_model_serializers
+# Document: https://github.com/rails-api/active_model_serializers/tree/v0.10.6/docs
+#   railsでjson出力というと、rabl、後はrails4からデフォルトになったjbuilderがあるが、
+#   これらはどちらもテンプレートエンジンで、オブジェクト指向的な書き方が出来なかった.
+#   対して、active_model_serializersは、テンプレートエンジンではなく、出力内容をserializerというクラスに定義するため、
+#   オブジェクト指向的な書き方が出来る、というものらしい
+gem 'active_model_serializers'
+
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
