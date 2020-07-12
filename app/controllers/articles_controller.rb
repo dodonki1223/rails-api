@@ -1,13 +1,7 @@
 class ArticlesController < ApplicationController
   def index
     paginated = Article.recent.page(current_page).per(per_page)
-    options = {
-      links: {
-        first: articles_path(per_page: per_page),
-        self:  articles_path(page: current_page, per_page: per_page),
-        last:  articles_path(page: paginated.total_pages, per_page: per_page)
-      }
-    }
+    options = PaginationMetaGenerator.new(request: request, total_pages: paginated.total_pages).call()
     render json: ArticleSerializer.new(paginated, options)
   end
 
