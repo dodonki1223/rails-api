@@ -1,7 +1,7 @@
 class UserAuthenticator
   class AuthenticationError < StandardError; end
 
-  attr_reader :user
+  attr_reader :user, :access_token
 
   def initialize(code)
     @code = code
@@ -12,6 +12,11 @@ class UserAuthenticator
       raise AuthenticationError
     else
       prepare_user
+      @access_token = if user.access_token.present?
+                        user.access_token
+                      else
+                        user.create_access_token
+                      end
     end
   end
 
@@ -25,6 +30,10 @@ class UserAuthenticator
   end
 
   def token
+    # ||= の書き方は左辺が存在しない場合、右辺の値が代入される仕組み、下記のように実行した場合は
+    # hoge には 1 の値が入ることになる
+    #   hoge ||= 1
+    #   hoge ||= 2
     @token ||= client.exchange_code_for_token(code)
   end
 
