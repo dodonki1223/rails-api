@@ -19,8 +19,4 @@ class ArticlesController < ApplicationController
   def per_page
     (params[:per_page] || 20).to_i
   end
-
-  def serializer
-    ArticleSerializer
-  end
 end
