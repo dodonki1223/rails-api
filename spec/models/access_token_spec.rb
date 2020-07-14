@@ -25,6 +25,9 @@ RSpec.describe AccessToken, type: :model do
     it 'should generate token once' do
       user = create :user
       access_token = user.create_access_token
+      # reload は何を意味するのか？
+      #  後者のreloadは、ARインスタンスをデータベースから再取得を行います。例えば、ロードしたインスタンスAはメモリ上にあるただのオブジェクトなので、
+      #  別のリクエストで発生したプロセスがDBのカラムを変更した時に即座にはインスタンスAに反映されません。
       expect(access_token.token).to eq(access_token.reload.token)
     end
   end

@@ -32,6 +32,7 @@ RSpec.describe AccessTokensController, type: :controller do
       let(:github_error) { double('Sawyer::Resource', error: 'bad_verification_code') }
 
       before do
+        # exchange_code_for_token が github_error を返すように Mock している
         allow_any_instance_of(Octokit::Client).to receive(
           :exchange_code_for_token).and_return(github_error)
       end
@@ -50,8 +51,10 @@ RSpec.describe AccessTokensController, type: :controller do
         }
       end
       before do
+        # exchange_code_for_token が正しいアクセストークンを返すように Mock している
         allow_any_instance_of(Octokit::Client).to receive(
           :exchange_code_for_token).and_return('validaccesstoken')
+        # user の情報を擬似的に返すように Mock している
         allow_any_instance_of(Octokit::Client).to receive(
           :user).and_return(user_data)
       end
@@ -66,6 +69,8 @@ RSpec.describe AccessTokensController, type: :controller do
       it 'should return proper json body' do
         expect{ subject }.to change{ User.count }.by(1)
         user = User.find_by(login: 'dodonki1223')
+
+        # access_token_serializer により token を返す json のテストをする
         expect(json_data['attributes']).to eq(
           { 'token' => user.access_token.token }
         )
