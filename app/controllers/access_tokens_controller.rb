@@ -10,4 +10,9 @@ class AccessTokensController < ApplicationController
     # ユーザーのアクセストークンを json で返す
     render json: AccessTokenSerializer.new(authenticator.access_token), status: :created 
   end
+
+  # DELETE /logout
+  def destroy
+    raise AuthorizationError
+  end
 end
