@@ -1,5 +1,5 @@
 class AccessTokensController < ApplicationController
-  before_action :authorize!, only: :destroy
+  skip_before_action :authorize!, only: :create
 
   # POST /login 
   def create

@@ -3,6 +3,13 @@ class ApplicationController < ActionController::API
   rescue_from UserAuthenticator::AuthenticationError, with: :authentiation_error
   rescue_from AuthorizationError, with: :authorization_error
 
+  # 認証プロセスの考え方は２つある
+  #   - 必要な部分だけ認証させる
+  #   - 認証プロセスを常にさせる、必要のない箇所だけ認証プロセスをスキップさせる
+  # `認証プロセスを常にさせる、必要のない箇所だけ認証プロセスをスキップさせる` こっちの方が、
+  # セキュリティ的には高くなる！！
+  before_action :authorize!
+
   private
 
   def authorize!

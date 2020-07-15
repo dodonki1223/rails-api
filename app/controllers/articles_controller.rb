@@ -1,4 +1,6 @@
 class ArticlesController < ApplicationController
+  # skip_before_action :authorize!, only: [:index, :show]
+
   def index
     paginated = Article.recent.page(current_page).per(per_page)
     options = PaginationMetaGenerator.new(request: request, total_pages: paginated.total_pages).call()
