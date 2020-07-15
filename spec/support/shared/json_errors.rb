@@ -31,6 +31,8 @@ shared_examples_for 'forbidden_requests' do
     }
   end
 
+  # ページが存在するものの、特定のアクセス者にページを表示する権限が付与されず、アクセス
+  # が拒否されたことをしめす
   it 'should return 403 statsu code' do
     subject
     expect(response).to have_http_status(:forbidden)

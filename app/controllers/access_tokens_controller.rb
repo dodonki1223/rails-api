@@ -1,4 +1,5 @@
 class AccessTokensController < ApplicationController
+  before_action :authorize!, only: :destroy
 
   # POST /login 
   def create
@@ -13,6 +14,6 @@ class AccessTokensController < ApplicationController
 
   # DELETE /logout
   def destroy
-    raise AuthorizationError
+    current_user.access_token.destroy
   end
 end
