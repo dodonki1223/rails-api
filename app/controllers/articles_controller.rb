@@ -1,5 +1,5 @@
 class ArticlesController < ApplicationController
-  # skip_before_action :authorize!, only: [:index, :show]
+  skip_before_action :authorize!, only: [:index, :show]
 
   def index
     paginated = Article.recent.page(current_page).per(per_page)
@@ -10,6 +10,10 @@ class ArticlesController < ApplicationController
   def show
     article = Article.find(params[:id])
     render json: ArticleSerializer.new(article)
+  end
+
+  def create
+
   end
 
   private

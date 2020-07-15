@@ -9,4 +9,8 @@ describe 'articles routes' do
     # id の指定は文字列でないといけない
     expect(get '/articles/1').to route_to('articles#show', id: '1')
   end
+
+  it 'shourd route to articles create' do
+    expect(post '/articles').to route_to('articles#create')
+  end
 end
