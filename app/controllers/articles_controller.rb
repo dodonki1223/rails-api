@@ -14,13 +14,12 @@ class ArticlesController < ApplicationController
 
   def create
     article = Article.new(article_params)
-    if article.valid?
-      # we will figure that out
-    else
-      render json: article, adapter: :json_api, 
-      serializer: ActiveModel::Serializer::ErrorSerializer,
-      status: :unprocessable_entity
-    end
+    article.save!
+    render json: article, status: :created
+  rescue
+    render json: article, adapter: :json_api, 
+    serializer: ErrorSerializer,
+    status: :unprocessable_entity      
   end
 
   private
@@ -34,7 +33,10 @@ class ArticlesController < ApplicationController
   end
 
   def article_params
-    # 空のパラメータを作成
+    # パラメータから data の attributes を取得し許可するのは `title`, `content`, `slug` のみとする
+    # パラメータが存在しなかったら `空のパラメータ` を返す
+    params.require(:data).require(:attributes).
+      permit(:title, :content, :slug) ||
     ActionController::Parameters.new
   end
 end
