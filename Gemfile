@@ -12,13 +12,13 @@ gem 'puma', '~> 4.1'
 gem 'rspec-rails'
 gem 'factory_bot_rails'
 
-# # Github:   https://github.com/rails-api/active_model_serializers
-# # Document: https://github.com/rails-api/active_model_serializers/tree/v0.10.6/docs
-# #   railsでjson出力というと、rabl、後はrails4からデフォルトになったjbuilderがあるが、
-# #   これらはどちらもテンプレートエンジンで、オブジェクト指向的な書き方が出来なかった.
-# #   対して、active_model_serializersは、テンプレートエンジンではなく、出力内容をserializerというクラスに定義するため、
-# #   オブジェクト指向的な書き方が出来る、というものらしい
-# gem 'active_model_serializers'
+# Github:   https://github.com/rails-api/active_model_serializers
+# Document: https://github.com/rails-api/active_model_serializers/tree/v0.10.6/docs
+#   railsでjson出力というと、rabl、後はrails4からデフォルトになったjbuilderがあるが、
+#   これらはどちらもテンプレートエンジンで、オブジェクト指向的な書き方が出来なかった.
+#   対して、active_model_serializersは、テンプレートエンジンではなく、出力内容をserializerというクラスに定義するため、
+#   オブジェクト指向的な書き方が出来る、というものらしい
+gem 'active_model_serializers'
 
 # active_model_serializers と機能は一緒だが、メンテナンスがされていないので Netflex がメンテナンスをしている
 # fast_jsonapi に変更したほうが良さそうなので乗り換える

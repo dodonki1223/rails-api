@@ -4,16 +4,23 @@ class ArticlesController < ApplicationController
   def index
     paginated = Article.recent.page(current_page).per(per_page)
     options = PaginationMetaGenerator.new(request: request, total_pages: paginated.total_pages).call()
-    render json: ArticleSerializer.new(paginated, options)
+    render json: ArticleSerializer2.new(paginated, options)
   end
 
   def show
     article = Article.find(params[:id])
-    render json: ArticleSerializer.new(article)
+    render json: ArticleSerializer2.new(article)
   end
 
   def create
-
+    article = Article.new(article_params)
+    if article.valid?
+      # we will figure that out
+    else
+      render json: article, adapter: :json_api, 
+      serializer: ActiveModel::Serializer::ErrorSerializer,
+      status: :unprocessable_entity
+    end
   end
 
   private
@@ -24,5 +31,10 @@ class ArticlesController < ApplicationController
 
   def per_page
     (params[:per_page] || 20).to_i
+  end
+
+  def article_params
+    # 空のパラメータを作成
+    ActionController::Parameters.new
   end
 end
