@@ -13,7 +13,9 @@ class ArticlesController < ApplicationController
   end
 
   def create
-    article = Article.new(article_params)
+    # build は `current_user.articles` で articles の build をすることで
+    # articles に user 情報を含めた形でオブジェクトを作ってくれる
+    article = current_user.articles.build(article_params)
     article.save!
     render json: article, status: :created
   rescue
@@ -23,13 +25,15 @@ class ArticlesController < ApplicationController
   end
 
   def update
-    article = Article.find(params[:id])
+    article = current_user.articles.find(params[:id])
     article.update!(article_params)
     render json: article, status: :ok
+  rescue ActiveRecord::RecordNotFound
+    authorization_error
   rescue
-    render json: article, adapter: :json_api, 
+    render json: article, adapter: :json_api,
     serializer: ErrorSerializer,
-    status: :unprocessable_entity      
+    status: :unprocessable_entity
   end
 
   private
