@@ -147,4 +147,23 @@ describe ArticlesController do
       end
     end
   end
+
+  describe '#update' do
+    let(:article) { create :article }
+    subject { patch :update, params: { id: article.id } }
+
+    context 'when no code provided' do
+      it_behaves_like 'forbidden_requests'
+    end
+
+    context 'when invalid code provided' do
+      before { request.headers['authorization'] = 'Invalid token' }
+
+      it_behaves_like 'forbidden_requests'
+    end
+
+    context 'when authorized' do
+
+    end
+  end
 end
