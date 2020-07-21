@@ -15,6 +15,7 @@ class ArticlesController < ApplicationController
   def create
     # build は `current_user.articles` で articles の build をすることで
     # articles に user 情報を含めた形でオブジェクトを作ってくれる
+    # 現在は new と同じなので どっちを使ってもよいと思う
     article = current_user.articles.build(article_params)
     article.save!
     render json: article, status: :created

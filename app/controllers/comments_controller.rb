@@ -1,5 +1,6 @@
 class CommentsController < ApplicationController
   skip_before_action :authorize!, only: [:index]
+  before_action :load_article, only: [:create]
 
   # GET /comments
   def index
@@ -10,18 +11,27 @@ class CommentsController < ApplicationController
 
   # POST /comments
   def create
-    @comment = Comment.new(comment_params)
+    @comment = @article.comments.build(
+      comment_params.merge(user: current_user)
+    )
 
     if @comment.save
-      render json: @comment, status: :created, location: @comment
+      # location: @article に変更する
+      # ヘッダーの Location に `/articles/1` のような値をセットする
+      render json: @comment, status: :created, location: @article
     else
       render json: @comment.errors, status: :unprocessable_entity
     end
   end
 
   private
+
+    def load_article
+      @article = Article.find(params[:article_id])
+    end
+
     # Only allow a trusted parameter "white list" through.
     def comment_params
-      params.require(:comment).permit(:content, :artile_id, :user, :references)
+      params.require(:comment).permit(:content)
     end
 end
