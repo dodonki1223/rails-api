@@ -22,6 +22,6 @@ class AccessTokensController < ApplicationController
 
   def authentication_params
     # ハッシュに変換してシンボル化する
-    params.permit(:code).to_h.symbolie_keys
+    params.permit(:code).to_h.symbolize_keys
   end
 end

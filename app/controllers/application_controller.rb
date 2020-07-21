@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::API
   class AuthorizationError < StandardError; end
-  rescue_from UserAuthenticator::AuthenticationError, with: :authentiation_error
+  rescue_from UserAuthenticator::Oauth::AuthenticationError, with: :authentiation_oauth_error
+  rescue_from UserAuthenticator::Standard::AuthenticationError, with: :authentiation_standard_error
   rescue_from AuthorizationError, with: :authorization_error
 
   # 認証プロセスの考え方は２つある
@@ -48,12 +49,22 @@ class ApplicationController < ActionController::API
     @current_user = access_token&.user
   end
 
-  def authentiation_error
+  def authentiation_oauth_error
     error = {
         "status" => "401",
         "source" => { "pointer" => "/code" },
         "title" => "Authentication code is invalid",
         "detail" => "You must provide valid code in order to exchange it for token."
+    }
+    render json: { "errors": [ error ] }, status: 401
+  end
+
+  def authentiation_standard_error
+    error = {
+      "status" => "401",
+      "source" => { "pointer" => "/data/attributes/password" },
+      "title" => "Invalid login or password",
+      "detail" => "You must provide valid credentials in order to exchange them for token."
     }
     render json: { "errors": [ error ] }, status: 401
   end
