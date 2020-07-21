@@ -5,11 +5,13 @@ class UserAuthenticator
 
   attr_reader :authenticator
 
-  def initialize(code: nil)
+  # login: nil などの引数を使う場合は引数がセットされるかどうかわからない時に使用すること
+  # 渡ってくる値が確実に決まっているのなら Standard.new(login, password) のように固定で宣言すること
+  def initialize(code: nil, login: nil, password: nil)
     @authenticator = if code.present?
                        Oauth.new(code)
                      else
-                       Standard.new(login: nil, password: nil)
+                       Standard.new(login, password)
                      end
   end
 
