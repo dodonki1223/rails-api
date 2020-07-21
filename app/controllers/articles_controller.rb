@@ -22,7 +22,7 @@ class ArticlesController < ApplicationController
   rescue
     render json: article, adapter: :json_api, 
     serializer: ErrorSerializer,
-    status: :unprocessable_entity      
+    status: :unprocessable_entity
   end
 
   def update

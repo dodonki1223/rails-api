@@ -51,9 +51,6 @@ RSpec.describe "/comments", type: :request do
   end
 
   describe "POST /create" do
-    let(:valid_attributes) { { content: 'My awesome comment for article' } }
-    let(:invalid_attributes) { { content: '' } }
-
     context 'when not authorized' do
       subject { post article_comments_path(article.id), as: :json }
 
@@ -61,39 +58,56 @@ RSpec.describe "/comments", type: :request do
     end
 
     context 'when authorized' do
+      let(:valid_attributes) do
+        { data: { attributes: { content: 'My awesome comment for article' } } }
+      end
+
       let(:user) { create :user }
       let(:access_token) { user.create_access_token }
       let(:valid_headers) { { authorization: "Bearer #{access_token.token}" } }
 
       context "with valid parameters" do
+        subject { post article_comments_path(article.id), params: valid_attributes , headers: valid_headers, as: :json }
+
+        it 'return 201 status code' do
+          subject
+          expect(response).to have_http_status(:created)
+        end
+
         it "creates a new Comment" do
-          expect {
-            post article_comments_path(article.id),
-                params: { comment: valid_attributes }, headers: valid_headers, as: :json
-          }.to change(Comment, :count).by(1)
+          expect { subject }.to change(article.comments, :count).by(1)
         end
 
         it "renders a JSON response with the new comment" do
-          post article_comments_path(article.id),
-              params: { comment: valid_attributes }, headers: valid_headers, as: :json
-          expect(response).to have_http_status(:created)
-          expect(response.content_type).to match(a_string_including("application/json"))
+          subject
+          expect(json_data['attributes']).to eq({
+            'content' => 'My awesome comment for article'
+          })
         end
       end
 
       context "with invalid parameters" do
-        it "does not create a new Comment" do
-          expect {
-            post article_comments_path(article.id),
-                params: { comment: invalid_attributes }, as: :json
-          }.to change(Comment, :count).by(0)
+        let(:invalid_attributes) do
+          { data: { attributes: { content: '' } } }
+        end
+
+        subject do
+            post article_comments_path(article.id), 
+            headers: valid_headers,
+            params: invalid_attributes, as: :json
+        end
+
+        it 'should return 422 status code' do
+          subject
+          expect(response).to have_http_status(:unprocessable_entity)
         end
 
         it "renders a JSON response with errors for the new comment" do
-          post article_comments_path(article.id),
-              params: { comment: invalid_attributes }, headers: valid_headers, as: :json
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.content_type).to match(a_string_including("application/json"))
+          subject
+          expect(json['errors']).to include({
+            "source" => { "pointer" => "/data/attributes/content" },
+            "detail" => "can't be blank"
+          })
         end
       end
 
