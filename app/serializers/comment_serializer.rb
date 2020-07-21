@@ -1,4 +1,5 @@
-class CommentSerializer < ApplicationSerializer
-  attributes :id, :content, :user, :references
-  has_one :artile
+class CommentSerializer < ActiveModel::Serializer
+  attributes :id, :content
+  has_one :article
+  has_one :user
 end

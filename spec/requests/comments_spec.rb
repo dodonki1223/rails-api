@@ -7,11 +7,46 @@ RSpec.describe "/comments", type: :request do
   }
 
   describe "GET /index" do
+    subject { get article_comments_path(article.id), headers: valid_headers, as: :json }
+
     it "renders a successful response" do
-      get article_comments_path(article.id), headers: valid_headers, as: :json
+      subject
       # expect(response).to be_successful この書き方だと詳しいエラーの内容がわからないため、
       # have_http_status を使用するとより鮮明にエラー内容を表示してくれる
       expect(response).to have_http_status(:ok)
+    end
+
+    it 'should return only comments belonging to article' do
+      comment = create :comment, article: article
+      create :comment
+      subject
+      expect(json_data.length).to eq(1)
+      expect(json_data.first['id']).to eq(comment.id.to_s)
+    end
+
+    it 'should paginate results' do
+      comments = create_list :comment, 3, article: article
+      get article_comments_path(article.id), params: { per_page: 1, page: 2 }
+      expect(json_data.length).to eq(1)
+      comment = comments.second
+      expect(json_data.first['id']).to eq(comment.id.to_s)
+    end
+
+    it 'should have proper json body' do
+      comment = create :comment, article: article
+      subject
+      expect(json_data.first['attributes']).to eq({
+        'content' => comment.content
+      })
+    end
+
+    it 'should have related objects infomation in the response' do
+      user = create :user
+      create :comment, article: article, user: user
+      subject
+      relationships = json_data.first['relationships']
+      expect(relationships['article']['data']['id']).to eq(article.id.to_s)
+      expect(relationships['user']['data']['id']).to eq(user.id.to_s)
     end
   end
 

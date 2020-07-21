@@ -292,7 +292,7 @@ describe ArticlesController do
           expect(response.body).to be_blank
         end
 
-        it 'should destroy  the article' do
+        it 'should destroy the article' do
           # subject を呼び出すことで明示的に Articles のデータ作成していることになる
           # subject 内で let を呼び出しているためである
           article
