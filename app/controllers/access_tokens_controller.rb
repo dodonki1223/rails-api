@@ -22,6 +22,26 @@ class AccessTokensController < ApplicationController
 
   def authentication_params
     # ハッシュに変換してシンボル化する
-    params.permit(:code).to_h.symbolize_keys
+    (standard_auth_params || params.permit(:code)).to_h.symbolize_keys
+  end
+
+  def standard_auth_params
+    # Rails コンソールで確認する時は以下のようにする
+    #   irb(main):001:0> params = ActionController::Parameters.new(code: 'sample')
+    #   => <ActionController::Parameters {"code"=>"sample"} permitted: false>
+    #   irb(main):002:0> params.permit(:code)
+    #   => <ActionController::Parameters {"code"=>"sample"} permitted: true>
+    #  
+    #   irb(main):003:0> params = ActionController::Parameters.new(data: { attributes: { login: 'login', password: 'password' } })
+    #   => <ActionController::Parameters {"data"=>{"attributes"=>{"login"=>"login", "password"=>"password"}}} permitted: false>
+    #   irb(main):004:0> params.permit(data: { attributes: {} })
+    #   => <ActionController::Parameters {"data"=><ActionController::Parameters {"attributes"=><ActionController::Parameters {"login"=>"login", "password"=>"password"} permitted: true>} permitted: true>} permitted: true>
+    # digメソッドを使用して余分な階層を排除して形で受け取る。さらに取り回ししやすいように to_h する
+    #   irb(main):007:0> params.dig(:data, :attributes).permit(:login, :password).to_h
+    #   => {"login"=>"login", "password"=>"password"}
+
+    # &. を使う理由は dig(:data, :attributes) キーが存在しない時、プログラムでエラーを返すため、
+    # &. を使用しては nil を返すようにする
+    params.dig(:data, :attributes)&.permit(:login, :password)
   end
 end
