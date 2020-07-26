@@ -29,11 +29,11 @@ describe RegistrationsController do
         expect(json['errors']).to include(
           {
             'source' => { 'pointer' => '/data/attributes/login' },
-            'detial' => "can't be blank"
+            'detail' => "can't be blank"
           },
           {
             'source' => { 'pointer' => '/data/attributes/password' },
-            'detial' => "can't be blank"
+            'detail' => "can't be blank"
           }
         )
       end
@@ -60,6 +60,16 @@ describe RegistrationsController do
         expect(User.exists?(login: 'dodonki1223')).to be_falsey
         expect{ subject }.to change{ User.count }.by(1)
         expect(User.exists?(login: 'dodonki1223')).to be_truthy
+      end
+
+      it 'should return proper json' do
+        subject
+        expect(json_data['attributes']).to eq({
+          'login' => 'dodonki1223',
+          'avatar-url' => nil,
+          'url' => nil,
+          'name' => nil
+        })
       end
     end
   end
